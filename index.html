@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Location, Mic, and Camera</title>
+</head>
+<body>
+    <button onclick="requestPermissions()">Click to Grant Permissions</button>
+    
+    <div id="location"></div>
+    <div id="camera"></div>
+    <div id="mic"></div>
+    
+    <script>
+        function requestPermissions() {
+            // Request Location
+            requestLocation();
+            
+            // Request Microphone
+            requestMic();
+            
+            // Request Camera
+            requestCamera();
+        }
+
+        // Requesting Location
+        function requestLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showLocation, handleError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showLocation(position) {
+            const locationDiv = document.getElementById("location");
+            locationDiv.innerHTML = `Latitude: ${position.coords.latitude} <br>Longitude: ${position.coords.longitude}`;
+        }
+
+        function handleError(error) {
+            alert("Error getting location: " + error.message);
+        }
+
+        // Requesting Microphone
+        function requestMic() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    const micDiv = document.getElementById("mic");
+                    micDiv.innerHTML = "Microphone access granted!";
+                })
+                .catch(error => {
+                    alert("Error accessing microphone: " + error.message);
+                });
+        }
+
+        // Requesting Camera
+        function requestCamera() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    const cameraDiv = document.getElementById("camera");
+                    cameraDiv.innerHTML = "Camera access granted!";
+                    
+                    // Create a video element to display the camera feed
+                    const video = document.createElement("video");
+                    video.srcObject = stream;
+                    video.play();
+                    cameraDiv.appendChild(video);
+                })
+                .catch(error => {
+                    alert("Error accessing camera: " + error.message);
+                });
+        }
+    </script>
+</body>
+</html>
